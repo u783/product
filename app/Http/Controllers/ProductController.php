@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 class ProductController extends Controller
 {
@@ -49,7 +51,7 @@ class ProductController extends Controller
             $product->save();
         }        
 
-        return redirect()->route('products.index')->with('success', '商品が新規登録されました。');
+        return redirect()->route('products.index')->with('success', config('messages.store_success'));
     }
 
     public function show(Product $product)
@@ -65,7 +67,7 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', '商品が削除されました。');
+        return redirect()->route('products.index')->with('success', config('messages.delete_success'));
     }
 
     public function update(Request $request, Product $product)
@@ -79,18 +81,17 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('storage');
-            $imagePath = str_replace('public/', '', $imagePath);
-            $product->image = $imagePath;
+            $imagePath = $image->store('public');
+            $product->image = Storage::url($imagePath);
         }
 
         $product->save();
 
-        return redirect()->route('products.index')->with('success', '商品が更新されました。');
+        $successMessage = config('messages.update_success');
+        return redirect()->route('products.index')->with('success', $successMessage);
     } catch (\Exception $e) {
-        return redirect()->route('products.index')->with('error', '商品の更新に失敗しました。');
+        $errorMessage = config('messages.update_error');
+        return redirect()->route('products.index')->with('error', $errorMessage);
     }
 }
-
-
 }
