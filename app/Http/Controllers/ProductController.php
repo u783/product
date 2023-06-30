@@ -43,8 +43,8 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('storage'); // 画像を指定のディレクトリに保存
-            $imagePath = str_replace('public/', '', $imagePath); // 保存したパスから"public/"を除去
+            $imagePath = $image->store('public/storage'); // 画像を指定のディレクトリに保存
+            $imagePath = str_replace('public/storage/', '', $imagePath); // 保存したパスから"public/"を除去
             $product->image = $imagePath;
             $product->save();
         }        

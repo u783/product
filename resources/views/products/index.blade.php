@@ -47,10 +47,10 @@
                         <tr>
                             <td>{{ $product->id }}</td>
                             <td>
-                                @if($product->image)
-                                <img src="{{ asset($product->image) }}" alt="商品画像" class="product-image">
+                            @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="商品画像" class="product-image">
                                 @else
-                                <img src="{{ asset('images/default-image.jpg') }}" alt="デフォルト画像" class="product-image">
+                                    <img src="{{ asset('images/default-image.jpg') }}" alt="デフォルト画像" class="product-image">
                                 @endif
                             </td>
                             <td style="text-align:center">{{ $product->name }}</td>
