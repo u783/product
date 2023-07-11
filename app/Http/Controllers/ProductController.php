@@ -6,6 +6,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
+use App\Models\Company;
+
 
 class ProductController extends Controller
 {
@@ -28,13 +30,23 @@ class ProductController extends Controller
 }
 
 
-    public function create()
-    {
-        return view('products.create');
-    }
+public function create()
+{
+    $companies = Company::all();
+    return view('products.create', compact('companies'));
+}
+
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'manufacturer' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+            'details' => 'required',
+        ]);
+
         $product = new Product();
         $product->name = $request->input('name');
         $product->manufacturer = $request->input('manufacturer');
@@ -55,13 +67,16 @@ class ProductController extends Controller
     }
 
     public function show(Product $product)
-    {
-        return view('products.show', compact('product'));
-    }
-    public function edit(Product $product)
 {
-    return view('products.edit', compact('product'));
+    $companies = Company::all();
+    return view('products.show', compact('product', 'companies'));
 }
+public function edit(Product $product)
+{
+    $companies = Company::all();
+    return view('products.edit', compact('product', 'companies'));
+}
+
 
     public function destroy(Product $product)
     {

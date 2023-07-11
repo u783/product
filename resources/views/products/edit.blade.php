@@ -2,49 +2,62 @@
 
 @section('content')
     <div class="container">
-        <h1>商品詳細変更</h1>
+        <h1>商品編集</h1>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
-                    <div class="form-group">
-                        <label for="name">商品名</label>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">商品名</label>
                         <input type="text" name="name" id="name" class="form-control" value="{{ $product->name }}" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="manufacturer">メーカー名</label>
-                        <input type="text" name="manufacturer" id="manufacturer" class="form-control" value="{{ $product->manufacturer }}" required>
+                    <div class="mb-3">
+                        <label for="company_id" class="form-label">メーカー名</label>
+                        <select name="company_id" id="company_id" class="form-control" required>
+                            <option value="">-- 選択してください --</option>
+                            @foreach ($companies as $company)
+                                <option value="{{ $company->id }}" {{ $product->company_id == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="price">価格</label>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">価格</label>
                         <input type="number" name="price" id="price" class="form-control" value="{{ $product->price }}" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="stock">在庫数</label>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">在庫数</label>
                         <input type="number" name="stock" id="stock" class="form-control" value="{{ $product->stock }}" required>
                     </div>
 
-                    <div class="form-group">
-                        <label for="image">商品画像</label>
-                        <input type="file" name="image" id="image" class="form-control-file" accept="image/*">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">商品画像</label>
                         @if ($product->image)
                             <img src="{{ asset($product->image) }}" alt="商品画像" class="product-image">
+                        @else
+                            <img src="{{ asset('images/default-image.jpg') }}" alt="デフォルト画像" class="product-image">
                         @endif
                     </div>
 
-                    <div class="form-group">
-                        <label for="details">詳細</label>
+                    <div class="mb-3">
+                        <label for="new_image" class="form-label">新しい画像</label>
+                        <input type="file" name="new_image" id="new_image" class="form-control-file" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="details" class="form-label">詳細</label>
                         <textarea name="details" id="details" rows="5" class="form-control" required>{{ $product->details }}</textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">変更する</button>
-                    <a href="{{ route('products.index') }}" class="btn btn-primary">戻る</a>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">更新する</button>
+                        <a href="{{ route('products.index') }}" class="btn btn-primary">キャンセル</a>
+                    </div>
                 </form>
             </div>
         </div>
