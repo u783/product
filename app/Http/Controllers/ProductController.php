@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
 use App\Models\Company;
+use Illuminate\Support\Facades\DB;
+
 
 
 class ProductController extends Controller
@@ -37,40 +39,48 @@ public function create()
 }
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'manufacturer' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'details' => 'required',
-        ]);
+public function store(Request $request)
+{
+    DB::beginTransaction(); // トランザクション開始
 
+    try {
+        // 商品の作成と保存
         $product = new Product();
         $product->name = $request->input('name');
         $product->manufacturer = $request->input('manufacturer');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock');
-        // 画像のアップロード処理などを追加する場合は適宜実装してください
         $product->details = $request->input('details');
+        $product->save();
 
+        // 画像の保存
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('public/storage'); // 画像を指定のディレクトリに保存
-            $imagePath = str_replace('public/storage/', '', $imagePath); // 保存したパスから"public/"を除去
+            $imagePath = $image->store('public/storage');
+            $imagePath = str_replace('public/storage/', '', $imagePath);
             $product->image = $imagePath;
-            $product->save();
-        }        
+        }
+
+        $product->save();
+
+        DB::commit(); // トランザクションのコミット
 
         return redirect()->route('products.index')->with('success', config('messages.store_success'));
-    }
+    } catch (\Exception $e) {
+        DB::rollBack(); // トランザクションのロールバック
 
-    public function show(Product $product)
-{
-    $companies = Company::all();
-    return view('products.show', compact('product', 'companies'));
+        return redirect()->route('products.index')->with('error', config('messages.store_error'));
+    }
 }
+
+
+public function show(Product $product)
+{
+    $product->load('company'); // 'company' リレーションをロード
+
+    return view('products.show', compact('product'));
+}
+
 public function edit(Product $product)
 {
     $companies = Company::all();

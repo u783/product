@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Company;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Image;
@@ -26,5 +27,9 @@ class Product extends Model
         return $this->update($data);
     }
 
+    public function company()
+{
+    return $this->belongsTo(Company::class, 'manufacturer', 'id');
+}
     
 }

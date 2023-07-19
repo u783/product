@@ -16,14 +16,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="company_id" class="form-label">メーカー名</label>
-                        <select name="company_id" id="company_id" class="form-control" required>
-                            <option value="">-- 選択してください --</option>
-                            @foreach ($companies as $company)
-                                <option value="{{ $company->id }}" {{ $product->company_id == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                       <label for="company_id" class="form-label">メーカー名</label>
+                       <select name="company_id" id="company_id" class="form-control" required>
+                    <option value="">-- 選択してください --</option>
+                        @foreach ($companies as $company)
+                    <option value="{{ $company->id }}" {{ $product->manufacturer == $company->id ? 'selected' : '' }}>
+                       {{ $company->company_name }}
+                    </option>
+                       @endforeach
+                    </select>
+                  </div>
+
 
                     <div class="mb-3">
                         <label for="price" class="form-label">価格</label>

@@ -12,9 +12,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="manufacturer" class="form-label">メーカー名</label>
-                    <input type="text" id="manufacturer" class="form-control" value="{{ $product->manufacturer }}" readonly>
+                   <label for="manufacturer" class="form-label">メーカー名</label>
+                @if ($product->company)
+                   <input type="text" class="form-control" value="{{ $product->company->company_name }}" readonly>
+                @else
+                   <input type="text" class="form-control" value="関連する会社が見つかりません" readonly>
+                @endif
                 </div>
+
 
                 <div class="mb-3">
                     <label for="price" class="form-label">価格</label>
