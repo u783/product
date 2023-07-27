@@ -90,14 +90,26 @@ public function edit(Product $product)
 
     public function destroy(Product $product)
     {
-        $product->delete();
+        try {
+            DB::beginTransaction();//トランザクション開始
 
-        return redirect()->route('products.index')->with('success', config('messages.delete_success'));
+            $product->delete();//商品の削除
+
+            DB::commit();//トランザクションのコミット
+
+            return redirect()->route('products.index')->with('success', config('messages.delete_success'));
+        } catch (\Exception $e) {
+            DB::rollBack(); // トランザクションのロールバック
+
+            return redirect()->route('products.index')->with('error', config('messages.delete_error'));
+        }
     }
 
-    public function update(Request $request, Product $product)
+public function update(Request $request, Product $product)
 {
     try {
+        DB::beginTransaction(); // トランザクション開始
+
         $product->name = $request->input('name');
         $product->manufacturer = $request->input('manufacturer');
         $product->price = $request->input('price');
@@ -110,11 +122,15 @@ public function edit(Product $product)
             $product->image = Storage::url($imagePath);
         }
 
-        $product->save();
+        $product->save(); // 商品の更新
+
+        DB::commit(); // トランザクションのコミット
 
         $successMessage = config('messages.update_success');
         return redirect()->route('products.index')->with('success', $successMessage);
     } catch (\Exception $e) {
+        DB::rollBack(); // トランザクションのロールバック
+
         $errorMessage = config('messages.update_error');
         return redirect()->route('products.index')->with('error', $errorMessage);
     }
