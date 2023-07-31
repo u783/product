@@ -25,11 +25,11 @@ class ProductController extends Controller
 
     $products = $query->paginate(10);
 
-    // 追加の処理
-    $allProducts = Product::all();
+    $productsWithCompanies = Product::with('company')->paginate(10);
 
-    return view('products.index', compact('products', 'allProducts'));
+    return view('products.index', compact('products', 'productsWithCompanies'));
 }
+
 
 
 public function create()
