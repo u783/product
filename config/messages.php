@@ -7,3 +7,12 @@ return [
     'delete_success' => '商品が削除されました。',
 ];
 
+return [
+    'name' => 'required|string|max:255',
+            'manufacturer' => 'required',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'details' => 'required',
+];
+

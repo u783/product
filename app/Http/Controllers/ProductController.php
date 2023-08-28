@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
 use App\Models\Company;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Requests\ProductRequest;
 
 
 class ProductController extends Controller
@@ -39,19 +39,20 @@ public function create()
 }
 
 
-public function store(Request $request)
+public function store(ProductRequest $request)
 {
     DB::beginTransaction(); // トランザクション開始
 
     try {
+        $validateData = $request->validated();
+
         // 商品の作成と保存
         $product = new Product();
-        $product->name = $request->input('name');
-        $product->manufacturer = $request->input('manufacturer');
-        $product->price = $request->input('price');
-        $product->stock = $request->input('stock');
-        $product->details = $request->input('details');
-        $product->save();
+        $product->name = $validateData['name'];
+        $product->manufacturer = $validateData['manufacturer'];
+        $product->price = $validateData['price'];
+        $product->stock = $validateData['stock'];
+        $product->details = $validateData['details'];
 
         // 画像の保存
         if ($request->hasFile('image')) {
