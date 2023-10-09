@@ -30,19 +30,21 @@
     <!-- 商品情報 -->
     <div class="table-responsive">
         <table class="table table-striped">
+            <!-- テーブルヘッダーの設定 -->
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>商品画像</th>
-                    <th>商品名</th>
-                    <th>価格</th>
-                    <th>在庫数</th>
-                    <th>メーカー名</th>
+                    <th><a href="#" class="sort" data-column="id">ID</a></th>
+                    <th><a href="#" class="sort" data-column="image">商品画像</a></th>
+                    <th><a href="#" class="sort" data-column="name">商品名</a></th>
+                    <th><a href="#" class="sort" data-column="price">価格</a></th>
+                    <th><a href="#" class="sort" data-column="stock">在庫数</a></th>
+                    <th><a href="#" class="sort" data-column="company_name">メーカー名</a></th>
                     <th>詳細</th>
                     <th>削除</th>
                 </tr>
             </thead>
-            <tbody>
+            <!-- 商品データの表示 -->
+            <tbody id="product-list">
                 @foreach($productsWithCompanies as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
@@ -78,4 +80,9 @@
         {{ $productsWithCompanies->links() }}
     </div>
 </div>
+
+
+<!-- JavaScriptファイルの読み込み -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('js/products.js') }}"></script>
 @endsection

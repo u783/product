@@ -11,9 +11,22 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductRequest;
 
 
+class YourController extends Controller
+{
+    public function yourMethod(Request $request)
+    {
+        // 以下の行を追加してブラウザキャッシュを無効にします。
+        $response = response()->view('your.view.name');
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        return $response;
+    }
+}
+
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    // ...
+
+public function index(Request $request)
 {
     $query = Product::query();
 
@@ -23,12 +36,33 @@ class ProductController extends Controller
             ->orWhere('manufacturer', 'like', $search);
     }
 
+    $column = $request->input('column', 'id');
+    $order = $request->input('order', 'asc');
+
+    $query->orderBy($column, $order);
+
+    if ($request->has('min_price')) {
+        $query->where('price', '>=', $request->input('min_price'));
+    }
+    if ($request->has('max_price')) {
+        $query->where('price', '<=', $request->input('max_price'));
+    }
+    if ($request->has('min_stock')) {
+        $query->where('stock', '>=', $request->input('min_stock'));
+    }
+    if ($request->has('max_stock')) {
+        $query->where('stock', '<=', $request->input('max_stock'));
+    }
+
     $products = $query->paginate(10);
 
     $productsWithCompanies = Product::with('company')->paginate(10);
 
     return view('products.index', compact('products', 'productsWithCompanies'));
 }
+
+// ...
+
 
 
 

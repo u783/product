@@ -54,6 +54,9 @@
                     <label for="stock" class="col-md-4 col-form-label text-md-right">在庫数</label>
                     <div class="col-md-8">
                         <input type="number" name="stock" id="stock" class="form-control" required>
+                        @if($errors->has('stock'))
+                        <p>{{ $errors->first('stock') }}</p>
+                        @endif
                     </div>
                 </div>
 
