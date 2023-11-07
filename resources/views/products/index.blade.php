@@ -11,15 +11,27 @@
     <h1>商品情報一覧</h1>
 
     <!-- 検索フォーム -->
-    <form action="{{ route('products.index') }}" method="GET" class="mb-3">
+    <form action="{{ route('products.search') }}" method="GET" class="mb-3">
         <div class="row">
             <div class="col-md-4">
                 <input type="text" name="search" class="form-control" placeholder="商品名やメーカー名で検索">
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">検索</button>
-            </div>
+            <div class="col-md-4">
+            <input type="text" name="min_price" class="form-control" placeholder="最低価格">
         </div>
+        <div class="col-md-4">
+            <input type="text" name="max_price" class="form-control" placeholder="最高価格">
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="min_stock" class="form-control" placeholder="最低在庫数">
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="max_stock" class="form-control" placeholder="最高在庫数">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">検索</button>
+        </div>
+    </div>
     </form>
 
     <!-- 新規登録リンク -->

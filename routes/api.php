@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\purchaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 // routes/api.php
 
-Route::post('/purchase', [PurchaseController::class, 'purchase'])->name('purchase');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/purchase', [PurchaseController::class, 'purchase'])->name('purchase');
+});

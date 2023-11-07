@@ -1,10 +1,15 @@
-<!-- resources/views/products/search.blade.php -->
-
 @extends('layouts.app')
 
 @section('content')
 <div class="container">
     <h1>商品検索結果</h1>
+
+    <!-- エラーメッセージ -->
+    @if(session('message'))
+        <div class="alert alert-danger">
+            {{ session('message') }}
+        </div>
+    @endif
 
     <!-- 商品データを表示 -->
     <table class="table table-striped">
@@ -31,5 +36,8 @@
             @endforelse
         </tbody>
     </table>
+
+    <!-- ページネーションリンク -->
+    {{ $products->links() }}
 </div>
 @endsection

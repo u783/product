@@ -1,7 +1,4 @@
 <?php
-
-// app/Http/Controllers/PurchaseController.php
-
 // app/Http/Controllers/PurchaseController.php
 
 namespace App\Http\Controllers;

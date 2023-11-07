@@ -9,29 +9,30 @@ use Illuminate\Http\Request;
 class ProductSearchController extends Controller
 {
     public function search(Request $request)
-    {
-        // リクエストから必要な検索条件を取得
-        $name = $request->input('name');
-        $manufacturer = $request->input('manufacturer');
-        $minPrice = $request->input('min_price');
-        $maxPrice = $request->input('max_price');
+{
+    $validatedData = $request->validate([
+        'name' => 'string|nullable',
+        'manufacturer' => 'string|nullable',
+        'min_price' => 'numeric|nullable',
+        'max_price' => 'numeric|nullable',
+    ]);
 
-        // Eloquentクエリビルダを使用して検索条件に基づくデータを取得
-        $products = Product::query()
-            ->when($name, function ($query) use ($name) {
-                return $query->where('name', 'like', '%' . $name . '%');
-            })
-            ->when($manufacturer, function ($query) use ($manufacturer) {
-                return $query->where('manufacturer', 'like', '%' . $manufacturer . '%');
-            })
-            ->when($minPrice, function ($query) use ($minPrice) {
-                return $query->where('price', '>=', $minPrice);
-            })
-            ->when($maxPrice, function ($query) use ($maxPrice) {
-                return $query->where('price', '<=', $maxPrice);
-            })
-            ->get();
+    $products = Product::query()
+        ->when($validatedData['name'], function ($query, $name) {
+            return $query->where('name', 'like', '%' . $name . '%');
+        })
+        ->when($validatedData['manufacturer'], function ($query, $manufacturer) {
+            return $query->where('manufacturer', 'like', '%' . $manufacturer . '%');
+        })
+        ->when($validatedData['min_price'], function ($query, $minPrice) {
+            return $query->where('price', '>=', $minPrice);
+        })
+        ->when($validatedData['max_price'], function ($query, $maxPrice) {
+            return $query->where('price', '<=', $maxPrice);
+        })
+        ->get();
 
-        return view('products.search', compact('products'));
-    }
+    return view('products.search', compact('products'));
+}
+
 }

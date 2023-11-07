@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Livewire\ProductList;
-
+use App\Http\Controllers\ProductsSearchController;
+use App\Http\Controllers\purchaseController;
 
 
 /*
@@ -28,8 +29,11 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products/search', [ProductSearchController::class, 'search'])->name('products.search');
+
 //Route::get('/products', \App\Http\Livewire\ProductList::class);
-Route::get('/search', 'ProductSerachController@serach')->name('products.search');
+Route::post('/purchase', [PurchaseController::class, 'purchase'])->name('purchase');
+
 Auth::routes();
 
 Route::get('/home', [ProductController::class, 'index'])->name('home')->middleware('auth');

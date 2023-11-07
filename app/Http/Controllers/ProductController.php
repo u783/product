@@ -42,16 +42,16 @@ public function index(Request $request)
     $query->orderBy($column, $order);
 
     if ($request->has('min_price')) {
-        $query->where('price', '>=', $request->input('min_price'));
+        $query->where('price', '>=', (float)$request->input('min_price'));
     }
     if ($request->has('max_price')) {
-        $query->where('price', '<=', $request->input('max_price'));
+        $query->where('price', '<=', (float)$request->input('max_price'));
     }
     if ($request->has('min_stock')) {
-        $query->where('stock', '>=', $request->input('min_stock'));
+        $query->where('stock', '>=', (float)$request->input('min_stock'));
     }
     if ($request->has('max_stock')) {
-        $query->where('stock', '<=', $request->input('max_stock'));
+        $query->where('stock', '<=', (float)$request->input('max_stock'));
     }
 
     $products = $query->paginate(10);
