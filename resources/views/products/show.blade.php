@@ -52,4 +52,20 @@
             <a href="{{ route('products.edit', $product) }}" class="btn btn-primary">編集</a>
         </div>
     </div>
+
+    <div class="mt-3">
+            <h2>購入する</h2>
+            <form method="POST" action="{{ route('purchase') }}">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">数量:</label>
+                    <input type="number" name="quantity" id="quantity" min="1" value="1" class="form-control">
+                </div>
+                
+                <button type="submit" class="btn btn-success">購入する</button>
+            </form>
+        </div>
+    </div>
 @endsection

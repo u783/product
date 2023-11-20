@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('sales', function (Blueprint $table) {
+            $table->integer('quantity'); // ここで quantity カラムを追加
         });
     }
 
@@ -26,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->dropColumn('quantity'); // ロールバック時に quantity カラムを削除
+        });
     }
 };

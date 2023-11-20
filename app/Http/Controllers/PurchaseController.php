@@ -48,7 +48,7 @@ class PurchaseController extends Controller
 
             DB::commit(); // トランザクションのコミット
 
-            return response()->json(['message' => '購入が完了しました。'], 200);
+            return response()->json(['message' => '購入が完了しました。', 'product_id' => $productId], 200);
         } catch (ValidationException $e) {
             // バリデーションエラー
             return response()->json(['error' => $e->validator->errors()], 422);
@@ -59,5 +59,6 @@ class PurchaseController extends Controller
         }
     }
 }
+
 
 

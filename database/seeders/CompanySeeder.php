@@ -18,17 +18,17 @@ class CompanySeeder extends Seeder
     {
         $companies = [
             [
-                'company_name' => '会社A',
+                'company_name' => 'コカコーラ',
                 'street_address' => '東京都',
                 'representative_name' => '代表A',
             ],
             [
-                'company_name' => '会社B',
+                'company_name' => 'サントリー',
                 'street_address' => '大阪府',
                 'representative_name' => '代表B',
             ],
             [
-                'company_name' => '会社C',
+                'company_name' => 'アサヒ',
                 'street_address' => '宮城県',
                 'representative_name' => '代表C',
             ],

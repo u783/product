@@ -1,41 +1,15 @@
-// 商品一覧を非同期で読み込む関数
-function loadProducts(column = 'id', order = 'asc') {
-    console.log('loadProducts() 関数が呼ばれました。');
-
-    $.ajax({
-        url: 'products', // 商品一覧を返すエンドポイントのURL
-        method: 'GET',
-        data: {
-            column: column,
-            order: order,
-            min_price: $('#min-price-input').val(),
-            max_price: $('#max-price-input').val(),
-            min_stock: $('#min-stock-input').val(),
-            max_stock: $('#max-stock-input').val(),
-            search: $('#search-input').val() // 検索条件も含めて送信
-        },
-        success: function(response) {
-            console.log('非同期リクエスト成功');
-            $('#product-list').html(response);
-        },
-        error: function(error) {
-            console.error('非同期リクエストエラー:', error);
-        }
-    });
-}
-
 // ページ読み込み時に商品一覧を表示
-jQuery(document).ready(function($) {
-    console.log('ページが読み込まれました。');
-    loadProducts(); // 初期表示はID昇順で読み込む
+$(document).ready(function() {
+    loadProducts();
+    applyTableBehaviors(); // 追加: 初回読み込み時にも適用
 });
 
 // テーブルヘッダーをクリックしてソート
-$('.sort').click(function(e) {
+$(document).off('click', '.sort').on('click', '.sort', function(e) {
     e.preventDefault();
     console.log('テーブルヘッダーがクリックされました。');
     var column = $(this).data('column');
-    var order = 'asc'; // 初期値は昇順
+    var order = 'asc';
 
     // ... (ソートの処理)
 
@@ -44,24 +18,83 @@ $('.sort').click(function(e) {
 });
 
 // 検索ボタンがクリックされた時の処理
-$('#search-button').click(function() {
+$(document).off('click', '#search-button').on('click', '#search-button', function() {
     console.log('検索ボタンがクリックされました。');
 
     // ... (検索の処理)
 
     // 非同期で検索を実行
     $.ajax({
-        url: '/products?search=' + searchQuery,
+        url: '/products',
         method: 'GET',
+        data: {
+            column: 'id', // 仮の値、実際の値に置き換える必要があります
+            order: 'asc', // 仮の値、実際の値に置き換える必要があります
+            min_price: $('#min-price-input').val(),
+            max_price: $('#max-price-input').val(),
+            min_stock: $('#min-stock-input').val(),
+            max_stock: $('#max-stock-input').val(),
+            search: $('#search-input').val()
+        },
         success: function(response) {
             console.log('検索リクエスト成功');
+            // テーブルを再描画
             $('#product-list').html(response);
+            // ソートやその他の処理を再適用
+            applyTableBehaviors();
         },
         error: function(error) {
             console.error('検索リクエストエラー:', error);
         }
     });
-});
+}); 
+
+//メーカ名を非同期に取得する関数
+function loadManufacturers() {
+    $.ajax({
+        url: '/manufacturers',
+        methed: 'GET',
+        success: function(response) {
+            console.log('メーカー名取得成功', response);
+
+            //取得したメーカー名を適切な方法で表示
+            displayManufacturers(response);
+        },
+        error: function(error) {
+            console.error('メーカー名取得エラー', error);
+
+        }
+    });
+}
+
+// 商品一覧を非同期で読み込む関数
+function loadProducts(column = 'id', order = 'asc') {
+    console.log('loadProducts() 関数が呼ばれました。');
+
+    $.ajax({
+        url: '/products',
+        method: 'GET',
+        data: {
+            column: column,
+            order: order,
+            min_price: $('#min-price-input').val(),
+            max_price: $('#max-price-input').val(),
+            min_stock: $('#min-stock-input').val(),
+            max_stock: $('#max-stock-input').val(),
+            search: $('#search-input').val()
+        },
+        success: function(response) {
+            console.log('非同期リクエスト成功');
+            // テーブルを再描画
+            $('#product-list').html(response);
+            // ソートやその他の処理を再適用
+            applyTableBehaviors();
+        },
+        error: function(error) {
+            console.error('非同期リクエストエラー:', error);
+        }
+    });
+}
 
 // 商品を削除する関数
 function deleteProduct(productId) {
@@ -87,4 +120,23 @@ function deleteProduct(productId) {
             }
         });
     }
+}
+
+// テーブルに関連する処理を再適用する関数
+function applyTableBehaviors() {
+    // ソートやその他の処理をここに記述
+    // 例: テーブルヘッダーをクリックしてソートする処理
+    $(document).off('click', '.sort').on('click', '.sort', function(e) {
+        e.preventDefault();
+        console.log('テーブルヘッダーがクリックされました。');
+        var column = $(this).data('column');
+        var order = 'asc';
+
+        // ... (ソートの処理)
+
+        // 商品一覧を非同期で読み込む
+        loadProducts(column, order);
+    });
+
+    // 他のテーブルに関連する処理も同様に記述
 }
