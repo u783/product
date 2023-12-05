@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    public function company()
+    public function products()
 {
-    return $this->belongsTo(Company::class);
+    return $this->hasMany(Product::class);
 }
-
+protected $fillable = [
+    'company_name',
+    'street_address',
+    'representative_name',
+];
 }

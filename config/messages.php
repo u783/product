@@ -9,10 +9,10 @@ return [
 
 return [
     'name' => 'required|string|max:255',
-            'manufacturer' => 'required',
+            'company_id' => 'required',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'details' => 'required',
+            'delete' => 'required',
 ];
 

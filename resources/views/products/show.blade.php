@@ -7,12 +7,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="name" class="form-label">商品名</label>
-                    <input type="text" id="name" class="form-control" value="{{ $product->name }}" readonly>
+                    <label for="product_name" class="form-label">商品名</label>
+                    <input type="text" id="product_name" class="form-control" value="{{ $product->product_name }}" readonly>
                 </div>
 
                 <div class="mb-3">
-                   <label for="manufacturer" class="form-label">メーカー名</label>
+                   <label for="company_id" class="form-label">メーカー名</label>
                 @if ($product->company)
                    <input type="text" class="form-control" value="{{ $product->company->company_name }}" readonly>
                 @else
@@ -20,8 +20,7 @@
                 @endif
                 </div>
 
-
-                <div class="mb-3">
+            <div class="mb-3">
                     <label for="price" class="form-label">価格</label>
                     <input type="number" id="price" class="form-control" value="{{ $product->price }}" readonly>
                 </div>
@@ -41,8 +40,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="details" class="form-label">詳細</label>
-                    <textarea id="details" class="form-control" readonly>{{ $product->details }}</textarea>
+                    <label for="comment" class="form-label">詳細</label>
+                    <textarea id="comment" class="form-control" readonly>{{ $product->comment }}</textarea>
                 </div>
             </div>
         </div>

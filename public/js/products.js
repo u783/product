@@ -17,48 +17,18 @@ $(document).off('click', '.sort').on('click', '.sort', function(e) {
     loadProducts(column, order);
 });
 
-// 検索ボタンがクリックされた時の処理
-$(document).off('click', '#search-button').on('click', '#search-button', function() {
-    console.log('検索ボタンがクリックされました。');
 
-    // ... (検索の処理)
-
-    // 非同期で検索を実行
-    $.ajax({
-        url: '/products',
-        method: 'GET',
-        data: {
-            column: 'id', // 仮の値、実際の値に置き換える必要があります
-            order: 'asc', // 仮の値、実際の値に置き換える必要があります
-            min_price: $('#min-price-input').val(),
-            max_price: $('#max-price-input').val(),
-            min_stock: $('#min-stock-input').val(),
-            max_stock: $('#max-stock-input').val(),
-            search: $('#search-input').val()
-        },
-        success: function(response) {
-            console.log('検索リクエスト成功');
-            // テーブルを再描画
-            $('#product-list').html(response);
-            // ソートやその他の処理を再適用
-            applyTableBehaviors();
-        },
-        error: function(error) {
-            console.error('検索リクエストエラー:', error);
-        }
-    });
-}); 
 
 //メーカ名を非同期に取得する関数
-function loadManufacturers() {
+function loadCompany_id() {
     $.ajax({
-        url: '/manufacturers',
-        methed: 'GET',
+        url: '/company_id',
+        method: 'GET',
         success: function(response) {
             console.log('メーカー名取得成功', response);
 
             //取得したメーカー名を適切な方法で表示
-            displayManufacturers(response);
+            displayCompany_id(response);
         },
         error: function(error) {
             console.error('メーカー名取得エラー', error);
@@ -75,8 +45,6 @@ function loadProducts(column = 'id', order = 'asc') {
         url: '/products',
         method: 'GET',
         data: {
-            column: column,
-            order: order,
             min_price: $('#min-price-input').val(),
             max_price: $('#max-price-input').val(),
             min_stock: $('#min-stock-input').val(),
@@ -90,11 +58,74 @@ function loadProducts(column = 'id', order = 'asc') {
             // ソートやその他の処理を再適用
             applyTableBehaviors();
         },
-        error: function(error) {
-            console.error('非同期リクエストエラー:', error);
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('非同期リクエストエラー:', textStatus, errorThrown);
         }
     });
 }
+
+        $(document).ready(function() {
+            // ページ読み込み時にIDで降順ソートされた状態にする
+            sortTable('id', 'desc');
+
+            // テーブルヘッダーがクリックされたらソートを切り替え
+            $(document).on('click', '.sortable', function() {
+                var column = $(this).data('column');
+                var currentOrder = $(this).data('order');
+                var newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+
+                // ソートを実行
+                sortTable(column, newOrder);
+
+                // データ属性を更新
+                $(this).data('order', newOrder);
+            });
+
+            // 検索ボタンがクリックされたときの非同期処理
+            $('#search-button').on('click', function() {
+                searchProducts();
+            });
+
+            // 検索を実行する関数
+            function searchProducts() {
+                // 検索条件の取得
+                var searchInput = $('#search-input').val();
+                var minPrice = $('#min-price-input').val();
+                var maxPrice = $('#max-price-input').val();
+                var minStock = $('#min-stock-input').val();
+                var maxStock = $('#max-stock-input').val();
+
+                // 以下、非同期処理を実行し、結果をもとに商品一覧を更新するコード
+                // ...
+
+                // 例として、ダミーの非同期処理を実行してみます
+                $.ajax({
+                    url: "{{ route('products.search') }}",
+                    method: "GET",
+                    data: {
+                        search: searchInput,
+                        min_price: minPrice,
+                        max_price: maxPrice,
+                        min_stock: minStock,
+                        max_stock: maxStock
+                    },
+                    success: function(response) {
+                        // 商品一覧を更新
+                        $('#product-list').html(response);
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            // ソートを行い、テーブルを更新する処理
+            function sortTable(column, order) {
+                console.log('Sort by ' + column + ' ' + order);
+                // ここにソートのための処理を実装
+                // ...
+            }
+        });
 
 // 商品を削除する関数
 function deleteProduct(productId) {

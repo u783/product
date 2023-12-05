@@ -13,19 +13,19 @@ class ProductSeeder extends Seeder
         $products = [
             [
                 'image' => 'path/to/image1.jpg',
-                'name' => '商品名1',
+                'product_name' => '商品名1',
                 'price' => 1000,
                 'stock' => 10,
-                'manufacturer' => 'メーカー名1',
-                'details' => '商品説明1',
+                'company_id' => '1',
+                'comment' => '商品説明1',
             ],
             [
-                'image' => 'path/to/image2.jpg',
-                'name' => '商品名2',
-                'price' => 2000,
-                'stock' => 5,
-                'manufacturer' => 'メーカー名2',
-                'details' => '商品説明2',
+                'image' => 'path/to/image1.jpg',
+                'product_name' => '商品名1',
+                'price' => 1000,
+                'stock' => 10,
+                'company_id' => '2',
+                'comment' => '商品説明1',
             ],
             // 他の商品データを追加する場合はここに記述
         ];

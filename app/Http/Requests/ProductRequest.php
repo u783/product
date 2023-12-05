@@ -24,12 +24,12 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'manufacturer' => 'required',
+            'product_name' => 'required|string|max:255',
+            'company_id' => 'required',
             'price' => 'required',
             'stock' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'details' => 'required',
+            'comment' => 'required',
         ];
     }
 
@@ -41,12 +41,12 @@ class ProductRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => '商品名',
-            'manufaturer' => 'メーカー名',
+            'product_name' => '商品名',
+            'company_id' => 'メーカー名',
             'price' => '価格',
             'stock' => '在庫',
             'image' => '画像',
-            'details' => '詳細',
+            'comment' => '詳細',
         ];
     }
 
@@ -54,9 +54,9 @@ class ProductRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => '商品名は必須項目です。',
+            'product_name.required' => '商品名は必須項目です。',
             'name.max' => '商品名は255文字以内で入力してください。',
-            'manufacturer.required' => 'メーカー名は必須項目です。',
+            'company_id.required' => 'メーカー名は必須項目です。',
             'price.required' => '価格は必須項目です。',
             'price.numeric' => '価格は数値を入力してください。',
             'stock.required' => '在庫数は必須項目です。',
@@ -64,7 +64,7 @@ class ProductRequest extends FormRequest
             'image.image' => '画像は画像ファイルを選択してください。',
             'image.mimes' => '画像はjpeg、png、jpg、gif形式のファイルを選択してください。',
             'image.max' => '画像は2MB以下のファイルを選択してください。',
-            'details.required' => '詳細は必須項目です。',
+            'comment.required' => '詳細は必須項目です。',
         ];
     }
 }

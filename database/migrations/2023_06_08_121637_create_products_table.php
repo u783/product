@@ -10,13 +10,17 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('manufacturer')->nullable();
-            $table->float('price');
-            $table->integer('stock');
             $table->string('image')->nullable();
-            $table->text('details')->nullable();
+            $table->string('product_name');
+            $table->decimal('price', 10, 2);
+            $table->integer('stock');
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
+
+
+            $table->string('company_name')->nullable();
+            $table->foreign('company_id')->references('id')->on('companies');
         });
     }
 
@@ -25,4 +29,5 @@ class CreateProductsTable extends Migration
         Schema::dropIfExists('products');
     }
 }
+
 

@@ -48,17 +48,16 @@ class PurchaseController extends Controller
 
             DB::commit(); // トランザクションのコミット
 
-            return response()->json(['message' => '購入が完了しました。', 'product_id' => $productId], 200);
+            return redirect()->route('product.index')->with('success', '購入が完了しました。');
         } catch (ValidationException $e) {
-            // バリデーションエラー
-            return response()->json(['error' => $e->validator->errors()], 422);
-        } catch (\Exception $e) {
-            DB::rollBack(); // トランザクションのロールバック
 
-            return response()->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+            return redirect()->back()->withErrors($e->validator->errors())->eithInput();
+        }catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
         }
     }
-}
-
 
 

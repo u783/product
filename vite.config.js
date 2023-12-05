@@ -4,7 +4,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: 'resources/js/products.js',
+        main: 'public/js/products.js',
       },
     },
   },

@@ -13,7 +13,7 @@ class ProductList extends Component
 
     public function render()
     {
-        $products = Product::where('name', 'like', '%' . $this->search . '%')
+        $products = Product::where('product_name', 'like', '%' . $this->search . '%')
             ->orWhere('manufacturer', 'like', '%' . $this->search . '%')
             ->get();
 

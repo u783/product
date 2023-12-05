@@ -11,8 +11,8 @@
                     @method('PUT')
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">商品名</label>
-                        <input type="text" name="name" id="name" class="form-control" value="{{ $product->name }}" required>
+                        <label for="product_name" class="form-label">商品名</label>
+                        <input type="text" name="product_name" id="product_name" class="form-control" value="{{ $product->product_name }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -20,7 +20,7 @@
                        <select name="company_id" id="company_id" class="form-control" required>
                     <option value="">-- 選択してください --</option>
                         @foreach ($companies as $company)
-                    <option value="{{ $company->id }}" {{ $product->manufacturer == $company->id ? 'selected' : '' }}>
+                    <option value="{{ $company->id }}" {{ $company->id == $company->id ? 'selected' : '' }}>
                        {{ $company->company_name }}
                     </option>
                        @endforeach
@@ -54,7 +54,7 @@
 
                     <div class="mb-3">
                         <label for="details" class="form-label">詳細</label>
-                        <textarea name="details" id="details" rows="5" class="form-control" required>{{ $product->details }}</textarea>
+                        <textarea name="comment" id="comment" rows="5" class="form-control" required>{{ $product->details }}</textarea>
                     </div>
 
                     <div class="mt-3">

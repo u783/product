@@ -29,7 +29,12 @@ class Product extends Model
 
     public function company()
 {
-    return $this->belongsTo(Company::class, 'manufacturer', 'id');
+    return $this->belongsTo(Company::class, 'company_id');
 }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
     
 }

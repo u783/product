@@ -13,11 +13,11 @@ class ProductFactory extends Factory
     {
         return [
             'image' => $this->faker->imageUrl(),
-            'name' => $this->faker->word,
+            'product_name' => $this->faker->word,
             'price' => $this->faker->numberBetween(100, 10000),
             'stock' => $this->faker->numberBetween(0, 100),
-            'manufacturer' => $this->faker->company,
-            'description' => $this->faker->paragraph,
+            'company_name' => $this->faker->company,
+            'comment' => $this->faker->paragraph,
         ];
     }
 }

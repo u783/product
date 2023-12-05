@@ -20,18 +20,18 @@
                 @csrf
 
                 <div class="form-group row">
-                    <label for="name" class="col-md-4 col-form-label text-md-right">商品名</label>
+                    <label for="product_name" class="col-md-4 col-form-label text-md-right">商品名</label>
                     <div class="col-md-8">
-                        <input type="text" name="name" id="name" class="form-control{{ $errors ->has('name') ? ' is-invalid' : '' }}" value="{{ old('name') }}">
-                        @if ($errors ->has('name'))
-                             <p>{{ $errors->first('name') }}</p>
+                        <input type="text" name="product_name" id="product_name" class="form-control{{ $errors ->has('product_name') ? ' is-invalid' : '' }}" value="{{ old('product_name') }}">
+                        @if ($errors ->has('product_name'))
+                             <p>{{ $errors->first('product_name') }}</p>
                     @endif
                 </div>
 
                 <div class="form-group row">
                     <label for="company_id" class="col-md-4 col-form-label text-md-right">メーカー名</label>
                     <div class="col-md-8">
-                    <select type="text" name="manufacturer" id="manufacturer" class="form-control" required>
+                    <select type="text" name="company_id" id="company_id" class="form-control" required>
                             <option value="">-- 選択してください --</option>
                             @foreach ($companies as $company)
                                 <option value="{{ $company->id }}">{{ $company->company_name }}</option>
@@ -71,11 +71,11 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="details" class="col-md-4 col-form-label text-md-right">詳細</label>
+                    <label for="comment" class="col-md-4 col-form-label text-md-right">詳細</label>
                     <div class="col-md-8">
-                        <textarea name="details" id="details" rows="5" class="form-control" required></textarea>
-                        @if($errors->has('details'))
-                        <p>{{ $errors->first('details') }}</p>
+                        <textarea name="comment" id="comment" rows="5" class="form-control" required></textarea>
+                        @if($errors->has('comment'))
+                        <p>{{ $errors->first('comment') }}</p>
                         @endif
                     </div>
                 </div>
