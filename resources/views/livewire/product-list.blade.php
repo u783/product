@@ -4,11 +4,11 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><a href="{{ route('products.index', ['column' => 'id', 'order' => 'asc']) }}">ID</a></th>                
+                <th><a href="{{ route('products.index', ['column' => 'id', 'order' => ($column ==='id' && $order === 'asc') ? 'desc' : 'asc']) }}">ID</a></th>                
                 <th><a href="{{ route('products.index', ['column' => 'image', 'order' => 'asc']) }}">商品画像</a></th>
                 <th><a href="{{ route('products.index', ['column' => 'product_name', 'order' => 'asc']) }}">商品名</a></th>
-                <th><a href="{{ route('products.index', ['column' => 'price', 'order' => 'asc']) }}">価格</a></th>
-                <th><a href="{{ route('products.index', ['column' => 'stock', 'order' => 'asc']) }}">在庫数</a></th>
+                <th><a href="{{ route('products.index', ['column' => 'price', 'order' => ($column === 'price' && $order === 'asc') ? 'desc' : 'asc']) }}">価格</a></th>
+                <th><a href="{{ route('products.index', ['column' => 'stock', 'order' => ($column === 'stock' && $order === 'asc') ? 'desc' : 'asc']) }}">在庫数</a></th>
                 <th><a href="{{ route('products.index', ['column' => 'company_name', 'order' => 'asc']) }}">メーカー名</a></th>
                 <th><a href="{{ route('products.index', ['column' => 'comment', 'order' => 'asc']) }}">詳細</a></th>
                 <th>削除</th>
@@ -36,7 +36,7 @@
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">削除</button>
+                            <button onclick="deleteProduct('{{ $product->id }}')" class="btn btn-danger btn-sm">削除</button>
                         </form>
                     </td>
                 </tr>

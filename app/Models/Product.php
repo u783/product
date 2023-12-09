@@ -9,6 +9,10 @@ use App\Models\Image;
 
 class Product extends Model
 {
+    protected $fillable = [
+        'company_id', 'product_name', 'price', 'comment', 'image'
+    ];
+    
     // データの取得
     public static function getAllProducts()
     {

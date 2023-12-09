@@ -2,21 +2,74 @@
 $(document).ready(function() {
     loadProducts();
     applyTableBehaviors(); // 追加: 初回読み込み時にも適用
-});
+
+
+    sortTable('id', 'desc');
 
 // テーブルヘッダーをクリックしてソート
-$(document).off('click', '.sort').on('click', '.sort', function(e) {
-    e.preventDefault();
-    console.log('テーブルヘッダーがクリックされました。');
-    var column = $(this).data('column');
-    var order = 'asc';
+$(document).on('click', '.sortable', function() {
+    var column = $(this).date('column');
+    var currentOrder = $(this).date('order');
+    var newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
 
-    // ... (ソートの処理)
+    // (ソートの処理)
+    sortTable(column, newOrder);
 
-    // 商品一覧を非同期で読み込む
-    loadProducts(column, order);
+    //データ属性を更新
+    $(this).date('order', newOrder);
 });
 
+// 検索ボタンがクリックされたときの非同期処理
+$('#search-button').on('click', function() {
+    searchProducts();
+});
+
+applyTableBehaviors();
+});
+
+// ソートを行い、テーブルを更新する処理
+function sortTable(column, order) {
+    console.log('Sort by ' + column + ' ' + order);
+    // ここにソートのための処理を実装
+    // ...
+}
+// 検索を実行する関数
+function searchProducts() {
+    // 検索条件の取得
+    var searchInput = $('#search-input').val().trim();
+    var companyInput = $('#company-input').val().trim();
+    var minPrice = $('#min-price-input').val().trim();
+    var maxPrice = $('#max-price-input').val().trim();
+    var minStock = $('#min-stock-input').val().trim();
+    var maxStock = $('#max-stock-input').val().trim();
+
+    // 以下、非同期処理を実行し、結果をもとに商品一覧を更新するコード
+    // ...
+
+    // 例として、ダミーの非同期処理を実行してみます
+    $.ajax({
+        url: "{{ route('products.search') }}",
+        method: "GET",
+        data: {
+            search: searchInput,
+            company_name: companyInput,
+            min_price: minPrice,
+            max_price: maxPrice,
+            min_stock: minStock,
+            max_stock: maxStock
+        },
+        success: function(response) {
+            // 商品一覧を更新
+            $('#product-list').html(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('非同期リクエストエラー:', status, error);
+
+            //ユーザーにエラー表示
+            alert('検索中にエラーが発生しました。もう一度試してください。')
+        }
+    });
+}
 
 
 //メーカ名を非同期に取得する関数
@@ -64,93 +117,39 @@ function loadProducts(column = 'id', order = 'asc') {
     });
 }
 
-        $(document).ready(function() {
-            // ページ読み込み時にIDで降順ソートされた状態にする
-            sortTable('id', 'desc');
-
-            // テーブルヘッダーがクリックされたらソートを切り替え
-            $(document).on('click', '.sortable', function() {
-                var column = $(this).data('column');
-                var currentOrder = $(this).data('order');
-                var newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-
-                // ソートを実行
-                sortTable(column, newOrder);
-
-                // データ属性を更新
-                $(this).data('order', newOrder);
-            });
-
-            // 検索ボタンがクリックされたときの非同期処理
-            $('#search-button').on('click', function() {
-                searchProducts();
-            });
-
-            // 検索を実行する関数
-            function searchProducts() {
-                // 検索条件の取得
-                var searchInput = $('#search-input').val();
-                var minPrice = $('#min-price-input').val();
-                var maxPrice = $('#max-price-input').val();
-                var minStock = $('#min-stock-input').val();
-                var maxStock = $('#max-stock-input').val();
-
-                // 以下、非同期処理を実行し、結果をもとに商品一覧を更新するコード
-                // ...
-
-                // 例として、ダミーの非同期処理を実行してみます
-                $.ajax({
-                    url: "{{ route('products.search') }}",
-                    method: "GET",
-                    data: {
-                        search: searchInput,
-                        min_price: minPrice,
-                        max_price: maxPrice,
-                        min_stock: minStock,
-                        max_stock: maxStock
-                    },
-                    success: function(response) {
-                        // 商品一覧を更新
-                        $('#product-list').html(response);
-                    },
-                    error: function(error) {
-                        console.error(error);
-                    }
-                });
-            }
-
-            // ソートを行い、テーブルを更新する処理
-            function sortTable(column, order) {
-                console.log('Sort by ' + column + ' ' + order);
-                // ここにソートのための処理を実装
-                // ...
-            }
-        });
-
+            
+        
 // 商品を削除する関数
 function deleteProduct(productId) {
     console.log('商品削除ボタンがクリックされました。');
-    if (confirm('商品を削除しますか？')) {
+
+    var confirmation = confirm('商品を削除しますか？');
+    console.log('Confirmation', confirmation);
+
+    if (confirmation) {
         $.ajax({
             url: '/products/' + productId,
             type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(response) {
-                console.log('商品削除リクエスト成功');
+                console.log('商品削除リクエスト成功', response);
                 if (response.success) {
-                    $('#product-row-' + productId).hide();
+                    alert('削除が成功しました。');
+                    location.reload();
                 } else {
-                    alert('削除に失敗しました。');
+                    alert('削除に失敗しました。' + response.message);
                 }
             },
-            error: function() {
-                console.error('商品削除リクエストエラー');
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('商品削除リクエストエラー', textStatus, errorThrown);
                 alert('削除に失敗しました。');
             }
         });
+    } else {
+        console.log('削除キャンセル');
+        // キャンセルが選択された場合は何もしない
     }
+
 }
 
 // テーブルに関連する処理を再適用する関数
@@ -168,6 +167,4 @@ function applyTableBehaviors() {
         // 商品一覧を非同期で読み込む
         loadProducts(column, order);
     });
-
-    // 他のテーブルに関連する処理も同様に記述
 }

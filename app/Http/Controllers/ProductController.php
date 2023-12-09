@@ -14,13 +14,17 @@ class ProductController extends Controller
 {
     public function index(Request $request)
 {
+    $order = $request->session()->get('order', 'asc');
+
     $query = Product::query();
 
     if ($request->has('search')) {
         $search = '%' . $request->input('search') . '%';
         $query->where('product_name', 'like', $search)
-            ->orWhere('company_name', 'like', $search);
-    }
+            ->orWhereHas('company', function ($q) use ($search) {
+                $q->where('company_name', 'like', $search);
+            });
+        }
 
     $column = $request->input('column', 'id');
     $order = $request->input('order', 'asc');
@@ -32,6 +36,8 @@ class ProductController extends Controller
     } else {
         $query->orderBy($column, $order);
     }
+
+    $request->session()->put('order', $order === 'asc' ? 'desc' : 'asc');
 
     if ($request->has('min_price')) {
         $query->where('price', '>=', (float)$request->input('min_price'));
@@ -48,7 +54,11 @@ class ProductController extends Controller
 
     $productsWithCompanies = $query->with('company')->paginate(10);
 
-    return view('products.index', compact('productsWithCompanies'));    
+    $products = Product::with('company')->get();
+
+    $companies = Company::all();
+
+    return view('products.index', compact('productsWithCompanies', 'order', 'column'));
 }
 
 
@@ -112,25 +122,37 @@ class ProductController extends Controller
         return view('products.edit', compact('product', 'companies'));
     }
 
-    public function destroy(Product $product)
-{
-    try {
-        DB::beginTransaction();
+    public function destroy(Request $request, Product $product)
+    {
+        try {
+            DB::beginTransaction();
 
-        // Delete related sales records
-        $product->sales()->delete();
+            // Delete related sales records
+            $product->sales()->delete();
 
-        // Now, delete the product
-        $product->delete();
+            // Now, delete the product
+            $product->delete();
 
-        DB::commit();
+            DB::commit();
 
-        return redirect()->route('products.index')->with('success', config('messages.delete_success'));
-    } catch (\Exception $e) {
-        DB::rollBack();
+            // リクエストが Ajax かどうかを判定し、結果を JSON で返す
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
 
-        return redirect()->route('products.index')->with('error', config('messages.delete_error'));    }
-}
+            return redirect()->route('products.index')->with('success', config('messages.delete_success'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // エラー時も同様に JSON レスポンスを返す
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => config('messages.delete_error')]);
+            }
+
+            return redirect()->route('products.index')->with('error', config('messages.delete_error'));
+        }
+    }
+
 
 
     public function update(Request $request, Product $product)
@@ -165,66 +187,42 @@ class ProductController extends Controller
     }
 
     public function search(Request $request)
-{
-    $query = Product::query();
+    {
+        // リクエストから検索条件を取得
+        $search = $request->input('search');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
+        $minStock = $request->input('min_stock');
+        $maxStock = $request->input('max_stock');
 
-    // Validate the request
-    $request->validate([
-        'search' => 'string|nullable',
-        'min_price' => 'numeric|nullable',
-        'max_price' => 'numeric|nullable',
-        'min_stock' => 'numeric|nullable',
-        'max_stock' => 'numeric|nullable',
-    ]);
+        // 商品データを検索
+        $query = Product::query()
+           ->when($searchInput, function ($query) use ($searchInput) {
+            $query->where('name', 'like', '%', $searchInput . '%');
+           })
+           ->when($compayId, function ($query) use ($compayId) {
+            $query->where('company_id', $comanyId);
+           })
+           ->get();
 
-    // Build dynamic search conditions using query builder
-    if ($request->filled('search')) {
-        $searchTerm = '%' . $request->input('search') . '%';
-        $query->where('product_name', 'like', $searchTerm)
-            ->orWhereHas('company', function ($query) use ($searchTerm) {
-                $query->where('company_name', 'like', $searchTerm);
-            });
+           $companies = Company::all();
+
+        if ($search) {
+            $query->where('product_name', 'like', '%' . $search . '%')
+                  ->orWhere('comment', 'like', '%' . $search . '%');
+        }
+
+        if ($minPrice && $maxPrice) {
+            $query->whereBetween('price', [$minPrice, $maxPrice]);
+        }
+
+        if ($minStock && $maxStock) {
+            $query->whereBetween('stock', [$minStock, $maxStock]);
+        }
+
+        $products = $query->get();
+
+        // 商品データをビューに返す
+        return view('products.search', compact('products'));
     }
-
-    if ($request->filled('min_price')) {
-        $minPrice = (float)$request->input('min_price');
-        $query->where('price', '>=', $minPrice);
-    }
-
-    if ($request->filled('max_price')) {
-        $maxPrice = (float)$request->input('max_price');
-        $query->where('price', '<=', $maxPrice);
-    }
-
-    if ($request->filled('min_stock')) {
-        $minStock = (float)$request->input('min_stock');
-        $query->where('stock', '>=', $minStock);
-    }
-
-    if ($request->filled('max_stock')) {
-        $maxStock = (float)$request->input('max_stock');
-        $query->where('stock', '<=', $maxStock);
-    }
-
-    // Handle sorting
-    $column = $request->input('column', 'id');
-    $order = $request->input('order', 'asc');
-
-    if ($column === 'company_name') {
-        $query->join('companies', 'products.company_id', '=', 'companies.id')
-            ->orderBy('companies.company_name', $order)
-            ->select('products.*');
-    } else {
-        $query->orderBy($column, $order);
-    }
-
-    // Execute the query and get the paginated results
-$products = $query->paginate(10);
-
-if ($request->ajax()) {
-    return view('product.index', compact('products'));
-} else {
-    return response()->json(['products' => $products]);
-}
-}
 }

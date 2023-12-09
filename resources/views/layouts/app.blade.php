@@ -19,7 +19,10 @@
     @vite(['resources/sass/app.scss'])
 
     <!-- JavaScriptファイルの読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="{{ asset('js/products.js') }}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
     <div id="app">
