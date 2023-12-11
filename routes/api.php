@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // routes/api.php
 
 Route::post('/purchase', [PurchaseController::class, 'purchase']);
+

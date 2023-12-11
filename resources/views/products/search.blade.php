@@ -1,30 +1,41 @@
 
 <!-- 検索フォーム -->
-            <form action="{{ route('products.index') }}" method="GET" class="mb-3">        
-                <div class="row">
-                <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="商品を検索">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="company_name" class="form-control" placeholder="メーカー名を検索">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="min_price" id="min-price-input" class="form-control" placeholder="最低価格">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="max_price" id="max-price-input" class="form-control" placeholder="最高価格">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="min_stock" id="min-stock-input" class="form-control" placeholder="最低在庫数">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="max_stock" id="max-stock-input" class="form-control" placeholder="最高在庫数">
-                </div>
-                <div class="input-group-append">
-                  <button type="submit" class="btn btn-primary">検索</button>
-                </div>
+<form action="{{ route('products.index') }}" method="GET" class="mb-3">
+    @csrf
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="search">商品を検索</label>
+            <input type="text" name="search" class="form-control" id="search" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="company_name">メーカー名を検索</label>
+            <input type="text" name="company_name" class="form-control" id="company_name" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="min-price-input">最低価格</label>
+            <input type="text" name="min_price" id="min-price-input" class="form-control" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="max-price-input">最高価格</label>
+            <input type="text" name="max_price" id="max-price-input" class="form-control" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="min-stock-input">最低在庫数</label>
+            <input type="text" name="min_stock" id="min-stock-input" class="form-control" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="max-stock-input">最高在庫数</label>
+            <input type="text" name="max_stock" id="max-stock-input" class="form-control" placeholder="">
+        </div>
+        <div class="form-group col-md-4">
+            <label class="invisible">検索ボタンのダミー</label>
+            <div class="input-group-append">
+                <button type="submit"  class="btn btn-primary">検索</button>
             </div>
-        </form>
+        </div>
+    </div>
+</form>
+
 
 <!-- 検索結果表示 -->
 <div class="mt-4">

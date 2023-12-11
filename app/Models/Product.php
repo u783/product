@@ -12,7 +12,7 @@ class Product extends Model
     protected $fillable = [
         'company_id', 'product_name', 'price', 'comment', 'image'
     ];
-    
+
     // データの取得
     public static function getAllProducts()
     {
@@ -33,7 +33,7 @@ class Product extends Model
 
     public function company()
 {
-    return $this->belongsTo(Company::class, 'company_id');
+    return $this->belongsTo(Company::class);
 }
 
     public function sales()

@@ -15,7 +15,6 @@ class ProductController extends Controller
     public function index(Request $request)
 {
     $order = $request->session()->get('order', 'asc');
-
     $query = Product::query();
 
     if ($request->has('search')) {
@@ -189,40 +188,41 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         // リクエストから検索条件を取得
-        $search = $request->input('search');
-        $minPrice = $request->input('min_price');
-        $maxPrice = $request->input('max_price');
-        $minStock = $request->input('min_stock');
-        $maxStock = $request->input('max_stock');
+    $search = $request->input('search');
+    $companyName = $request->input('company_name');
+    $minPrice = $request->input('min_price');
+    $maxPrice = $request->input('max_price');
+    $minStock = $request->input('min_stock');
+    $maxStock = $request->input('max_stock');
 
-        // 商品データを検索
-        $query = Product::query()
-           ->when($searchInput, function ($query) use ($searchInput) {
-            $query->where('name', 'like', '%', $searchInput . '%');
-           })
-           ->when($compayId, function ($query) use ($compayId) {
-            $query->where('company_id', $comanyId);
-           })
-           ->get();
+    // 商品データを検索
+    $query = Product::query();
 
-           $companies = Company::all();
-
-        if ($search) {
+    // Apply search conditions
+    if ($search) {
+        $query->where(function ($query) use ($search) {
             $query->where('product_name', 'like', '%' . $search . '%')
                   ->orWhere('comment', 'like', '%' . $search . '%');
-        }
-
-        if ($minPrice && $maxPrice) {
-            $query->whereBetween('price', [$minPrice, $maxPrice]);
-        }
-
-        if ($minStock && $maxStock) {
-            $query->whereBetween('stock', [$minStock, $maxStock]);
-        }
-
-        $products = $query->get();
-
-        // 商品データをビューに返す
-        return view('products.search', compact('products'));
+        });
     }
+
+    if ($companyName) {
+        $query->whereHas('company', function ($q) use ($companyName) {
+            $q->where('company_name', 'like', '%' . $companyName . '%');
+        });
+    }
+
+    if ($minPrice && $maxPrice) {
+        $query->whereBetween('price', [$minPrice, $maxPrice]);
+    }
+
+    if ($minStock && $maxStock) {
+        $query->whereBetween('stock', [$minStock, $maxStock]);
+    }
+
+    $products = $query->get();
+
+    // 商品データをビューに返す
+    return view('products.search', compact('products'));
+}
 }
