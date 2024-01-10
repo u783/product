@@ -8,9 +8,10 @@
             {{ session('success') }}
         </div>
     @endif
-
+    
+    <div class="text-center">
         <h1>商品情報一覧</h1>
-
+    </div>
         @include('products.search')  <!-- 検索フォームのインクルード -->
 
         <!-- 新規登録リンク -->
@@ -24,7 +25,6 @@
         @else
             <p>No results found</p>
         @endif
-    
 
     <!-- ページネーションリンク -->
     <div class="d-flex justify-content-center">

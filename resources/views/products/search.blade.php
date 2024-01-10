@@ -1,9 +1,9 @@
 
 <!-- 検索フォーム -->
-<form action="{{ route('products.index') }}" method="GET" class="mb-3">
+<form action="{{ route('products.index') }}" method="GET" class="mb-3 text-center">
     @csrf
-    <div class="form-row">
-        <div class="form-group col-md-4">
+    <div class="form-row text-center" style="margin: auto;">
+        <div class="form-group col-md-4 ">
             <label for="search">商品を検索</label>
             <input type="text" name="search" class="form-control" id="search" placeholder="">
         </div>
@@ -30,18 +30,19 @@
         <div class="form-group col-md-4">
             <label class="invisible">検索ボタンのダミー</label>
             <div class="input-group-append">
-                <button type="submit"  class="btn btn-primary">検索</button>
+                <button type="button" id="search-button" class="btn btn-primary">検索</button>
             </div>
         </div>
     </div>
 </form>
 
 
+
 <!-- 検索結果表示 -->
 <div class="mt-4">
             @if(isset($products))
                 <h2>検索結果</h2>
-                <table class="table table-striped">
+                <table class="table table-striped" id="product-list">
                     <thead>
                         <tr>
                             <th>ID</th>

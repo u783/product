@@ -186,8 +186,8 @@ class ProductController extends Controller
     }
 
     public function search(Request $request)
-    {
-        // リクエストから検索条件を取得
+{
+    // リクエストから検索条件を取得
     $search = $request->input('search');
     $companyName = $request->input('company_name');
     $minPrice = $request->input('min_price');
@@ -221,7 +221,7 @@ class ProductController extends Controller
     }
 
     $products = $query->get();
-
+    
     // 商品データをビューに返す
     return view('products.search', compact('products'));
 }

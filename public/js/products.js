@@ -1,32 +1,31 @@
 // ページ読み込み時に商品一覧を表示
-$(document).ready(function() {
+$(document).ready(function () {
     loadProducts();
-  
-    sortTable('id', 'desc');
 
-// テーブルヘッダーをクリックしてソート
-$(document).on('click', '.sortable', function() {
-    var column = $(this).data('column');
-    var currentOrder = $(this).data('order');
-    var newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+    // テーブルヘッダーをクリックしてソート
+    $(document).on('click', '.sortable', function () {
+        var column = $(this).data('column');
+        var currentOrder = $(this).data('order');
+        var newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
 
-    // (ソートの処理)
-    sortTable(column, newOrder);
+        // ソートの処理
+        sortTable(column, newOrder);
 
-    //データ属性を更新
-    $(this).data('order', newOrder);
-});
+        // データ属性を更新
+        $(this).data('order', newOrder);
 
-// 検索ボタンがクリックされたときの非同期処理
-$('#search-button').on('click', function(event) {
-    event.preventDefault(); // フォームのデフォルトの送信を防ぐ
-    console.log('検索ボタンがクリックされました。');
-    searchProducts();
-});
+        // 商品一覧を非同期で読み込む
+        loadProducts(column, newOrder);
+    });
 
+    // 検索ボタンがクリックされたときの非同期処理
+    $(document).on('click', '#search-button', function (event) {
+        event.preventDefault(); // フォームのデフォルトの送信を防ぐ
+        console.log('検索ボタンがクリックされました。');
+        searchProducts();
+    });
 
-
-applyTableBehaviors();
+    applyTableBehaviors();
 });
 
 // ソートを行い、テーブルを更新する処理
@@ -35,18 +34,22 @@ function sortTable(column, order) {
     // ここにソートのための処理を実装
     // ...
 }
+
 // 検索を実行する関数
 function searchProducts() {
     var searchInput = ($('#search-input').val() || '').trim();
-    var companyInput = ($('input[name="company_name"]').val() || '').trim();
+    var companyInput = ($('#company_name').val() || '').trim();
     var minPrice = ($('#min-price-input').val() || '').trim();
     var maxPrice = ($('#max-price-input').val() || '').trim();
     var minStock = ($('#min-stock-input').val() || '').trim();
     var maxStock = ($('#max-stock-input').val() || '').trim();
 
     $.ajax({
-        url: '/products/search',
+        url: '/products/search', // 直接URLを指定
         method: "GET",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
         data: {
             search: searchInput,
             company_name: companyInput,
@@ -55,48 +58,44 @@ function searchProducts() {
             min_stock: minStock,
             max_stock: maxStock
         },
-        success: function(response) {
+        success: function (response) {
             $('#product-list').html(response);
             applyTableBehaviors();
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error('非同期リクエストエラー:', status, error);
-            alert('検索中にエラーが発生しました。もう一度試してください。');
+            
+            if (xhr.status === 404) {
+                alert('リクエストされたリソースが見つかりません。');
+            } else if (xhr.status === 500) {
+                alert('サーバーエラーが発生しました。');
+            } else {
+                alert('検索中にエラーが発生しました。もう一度試してください。 \nエラー詳細: ' + error);
+            }
         }
     });
 }
 
-
-
 // 商品一覧を非同期で読み込む関数
-function loadProducts(column = 'id', order = 'asc') {
+function loadProducts() {
     console.log('loadProducts() 関数が呼ばれました。');
 
     $.ajax({
         url: '/products',
         method: 'GET',
-        data: {
-            min_price: $('#min-price-input').val(),
-            max_price: $('#max-price-input').val(),
-            min_stock: $('#min-stock-input').val(),
-            max_stock: $('#max-stock-input').val(),
-            search: $('#search-input').val()
-        },
-        success: function(response) {
+        success: function (response) {
             console.log('非同期リクエスト成功');
             // テーブルを再描画
             $('#product-list').html(response);
             // ソートやその他の処理を再適用
             applyTableBehaviors();
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.error('非同期リクエストエラー:', textStatus, errorThrown);
         }
     });
 }
 
-            
-        
 // 商品を削除する関数
 function deleteProduct(productId) {
     console.log('商品削除ボタンがクリックされました。');
@@ -107,9 +106,9 @@ function deleteProduct(productId) {
     if (confirmation) {
         $.ajax({
             url: '/products/' + productId,
-            type: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            success: function(response) {
+            type: 'POST', // POSTに変更
+            data: { '_method': 'DELETE', '_token': $('meta[name="csrf-token"]').attr('content') }, // CSRFトークンを追加
+            success: function (response) {
                 console.log('商品削除リクエスト成功', response);
                 if (response.success) {
                     alert('削除が成功しました。');
@@ -118,7 +117,7 @@ function deleteProduct(productId) {
                     alert('削除に失敗しました。' + response.message);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 console.error('商品削除リクエストエラー', textStatus, errorThrown);
                 alert('削除に失敗しました。');
             }
@@ -127,14 +126,13 @@ function deleteProduct(productId) {
         console.log('削除キャンセル');
         // キャンセルが選択された場合は何もしない
     }
-
 }
 
 // テーブルに関連する処理を再適用する関数
 function applyTableBehaviors() {
     // ソートやその他の処理をここに記述
     // 例: テーブルヘッダーをクリックしてソートする処理
-    $(document).off('click', '.sort').on('click', '.sort', function(e) {
+    $(document).off('click', '.sort').on('click', '.sort', function (e) {
         e.preventDefault();
         console.log('テーブルヘッダーがクリックされました。');
         var column = $(this).data('column');
