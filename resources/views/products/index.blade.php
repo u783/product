@@ -20,11 +20,7 @@
         </div>
 
         <!-- 商品情報 -->
-        @if ($productsWithCompanies->count() > 0)
-            @include('livewire.product-list', ['products' => $productsWithCompanies])
-        @else
-            <p>No results found</p>
-        @endif
+        @livewire('product-list', ['products' => $productsWithCompanies])
 
     <!-- ページネーションリンク -->
     <div class="d-flex justify-content-center">

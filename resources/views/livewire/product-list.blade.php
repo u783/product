@@ -1,6 +1,6 @@
 <!-- product-list.blade.php -->
 
-<div class="table-responsive">
+<div class="table-responsive" id="product-list">
     <table class="table table-striped">
         <thead>
             <tr>
@@ -15,8 +15,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($products as $product)
-                <tr>
+        @foreach($productsWithCompanies as $product)                 <tr>
                     <td>{{ $product->id }}</td>
                     <td>
                         @if($product->image)
